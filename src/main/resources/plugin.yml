@@ -1,0 +1,46 @@
+name: VoidCleaner
+prefix: VoidCleaner
+version: '${version}'
+
+main: pl.szczerbal.voidcleaner.VoidCleaner
+api-version: '1.20'
+load: POSTWORLD
+
+authors: [ Dominik (Dominos111G) ]
+website: https://szczerbal.com
+
+commands:
+  void:
+    description: Void management commands
+    usage: /void [clean|open|close|fullclean|worldclean]
+    permission: voidcleaner.use
+
+permissions:
+  voidcleaner.use:
+    description: Pozwala na dostęp do GUI voidu - /void
+    default: true
+  voidcleaner.admin:
+    description: Admin - wszystkie komendy
+    default: op
+    children:
+      voidcleaner.use: true
+      voidcleaner.clean: true
+      voidcleaner.fullclean: true
+      voidcleaner.worldclean: true
+      voidcleaner.open: true
+      voidcleaner.close: true
+  voidcleaner.clean:
+    description: Admin - /void clean (czyszczenie normalne)
+    default: op
+  voidcleaner.fullclean:
+    description: Admin - /void fullclean (czyszczenie pełne)
+    default: op
+  voidcleaner.worldclean:
+    description: Admin - /void worldclean (czyszczenie asymc)
+    default: op
+  voidcleaner.open:
+    description: Admin - /void open (otwarcie voidu)
+    default: op
+  voidcleaner.close:
+    description: Admin - /void close (zamknięcie voidu)
+    default: op

@@ -1,0 +1,300 @@
+# ============================================================
+#   VoidCleaner - Konfiguracja
+# ============================================================
+#
+# VoidCleaner automatycznie zarządza itemami w voidu poprzez:
+# 1. Automatyczne czyszczenie (default-clean) co X sekund
+# 2. Inteligentne czyszczenie przy niskim TPS
+# 3. Ręczne czyszczenie przez admina (/void clean|fullclean)
+# 4. Async world cleanup dla niezaładowanych chunkow (/void worldclean)
+
+# ============================================================
+#   Mapowanie światów do voidów
+# ============================================================
+#
+# Struktura: void-name: [lista-światów]
+# Każdy świat może należeć do dokładnie jednego voidu.
+# Jeśli świat nie jest wymieniony, użyj default-void.
+# Itemy z tych światów będą przechowywane w tym voidu.
+#
+# PRZYKŁAD:
+#   world-voids:
+#     overworld:
+#       - world
+#     nether-end:
+#       - world_nether
+#       - world_the_end
+#     custom:
+#       - custom_world_1
+#
+world-voids:
+  overworld:
+    - world
+  nether-end:
+    - world_nether
+    - world_the_end
+
+# Domyślny void dla światów które nie są w world-voids
+default-void: overworld
+
+# ============================================================
+#   Limity przechowywania
+# ============================================================
+
+# Maksymalna liczba SZTUK przedmiotow (nie slotow) przechowywanych w voidzie.
+# Gdy void jest pelny, nadwyzka przedmiotow jest usuwana na zawsze.
+# Ustaw 0 aby wylаczyc limit.
+#
+# REKOMENDACJE:
+#   - Small server (2-4 graczy): 2000-5000
+#   - Medium server (5-20 graczy): 5000-15000
+#   - Large server (20+ graczy): 15000-50000
+max-void-storage: 10000
+
+# ============================================================
+#   Automatyczne czyszczenie
+# ============================================================
+
+# Co ile sekund wykonywac regularnie czyszczenie (default-clean).
+# Czyszczenie usuwa: items, pociski, puste lodki/minecarty
+#
+# REKOMENDACJE:
+#   - 300 (5 min) - mały lag
+#   - 600 (10 min) - brak problemów z lagiem
+#   - 1200 (20 min) - wielkie serwery
+cleanup-interval-seconds: 600
+
+# Czy włączyć automatyczne czyszczenie?
+# Jeśli false, czyszczenie odbywa się tylko ręcznie i przy niskim TPS
+enable-auto-cleanup: true
+
+# ============================================================
+#   Inteligentne czyszczenie bazowane na TPS
+# ============================================================
+#
+# VoidCleaner monitoruje TPS serwera i automatycznie:
+# 1. TPS > high-tps-threshold: normalne działanie
+# 2. TPS <= low-tps-threshold: włącza aggressive cleanup (highClean)
+# 3. TPS <= critical-tps-threshold: włącza fullCleanup (wszystko)
+
+# Próg TPS dla agresywnego czyszczenia (high-clean)
+# Poniżej tej wartości: usuwa także mobs (nie tylko items)
+#
+# REKOMENDACJE:
+#   - 15.0 - czuły na lag
+#   - 12.0 - normalne (domyślnie)
+#   - 10.0 - mniej czuły (tylko krytyczne)
+low-tps-threshold: 12.0
+
+# Próg TPS dla pełnego czyszczenia (fullCleanup)
+# Poniżej tej wartości: usuwa prawie WSZYSTKO (oprócz blacklist)
+#
+# REKOMENDACJE:
+#   - 10.0 - szybka reakcja
+#   - 8.0 - normalne (domyślnie)
+#   - 6.0 - tylko w ostateczności
+critical-tps-threshold: 8.0
+
+# Jak często sprawdzać TPS (w sekundach)
+tps-check-interval-seconds: 30
+
+# ============================================================
+#   Obsługa Voidów
+# ============================================================
+
+# Za ile sekund void się AUTOMATYCZNIE zamknie po otwarciu?
+# Gracze mogą wyciągać itemy, ale po tym czasie void sie zamyka
+# i wszystkie pozostałe itemy są usuwane na zawsze!
+void-close-delay-seconds: 120
+
+# ============================================================
+#   Ostrzeżenia (sekundy przed zdarzeniem)
+# ============================================================
+
+# Ostrzezenia przed automatycznym czyszczeniem itemow
+clean-warning-times:
+  - 30
+  - 15
+  - 5
+
+# Ostrzezenia przed otwarciem voida (po czyszczeniu)
+open-warning-times:
+  - 15
+  - 5
+
+# Ostrzezenia przed zamknieciem voida
+close-warning-times:
+  - 30
+  - 15
+  - 5
+
+# ============================================================
+#   Globalne ochrony
+# ============================================================
+
+# Jeśli true: osvójone zwierzęta (koty, psy, konie...) NIGDY nie zostana usuniete,
+# nawet jeśli ich typ jest na liście czyszczenia.
+protect-tamed: true
+
+# Jeśli true: moby/zwierzęta z nametag NIGDY nie zostaną usunięte.
+protect-named: true
+
+# ============================================================
+#   Listy czyszczenia
+#
+#   Format wpisu: "minecraft:<typ> [warunki...]"
+#
+#   Dostępne warunki (można łączyć wiele):
+#     +empty     !empty     - czy encja ma pasażerów (łódki, minecarty)
+#     +tamed     !tamed     - czy encja jest oswojona
+#     +named     !named     - czy encja ma własną nazwę (nametag)
+#     +adult     !adult     - czy encja jest dorosła
+#     +baby      !baby      - czy encja jest młoda
+#     +hostile   !hostile   - czy encja jest wroga (Monster)
+#     +passive   !passive   - czy encja jest pasywna (Animals)
+#     +on_ground !on_ground - czy encja stoi na ziemi
+#
+#   Przykłady:
+#     "minecraft:oak_boat +empty"       -> usuwa tylko puste łódki
+#     "minecraft:minecart"              -> usuwa wszystkie minecarty
+#     "minecraft:wolf !tamed"           -> usuwa tylko dzikie wilki
+#     "minecraft:zombie !named +adult"  -> usuwa dorosłego zombie bez nametag
+# ============================================================
+
+# Zwykłe czyszczenie (co cleanup-interval-seconds + low TPS)
+# Usuwa: items, pociski, puste pojazdy
+default-clean:
+  - minecraft:item
+  - minecraft:arrow
+  - minecraft:spectral_arrow
+  - minecraft:snowball
+  - minecraft:egg
+  - minecraft:ender_pearl
+  - minecraft:potion
+  - minecraft:experience_bottle
+  - minecraft:oak_boat +empty
+  - minecraft:spruce_boat +empty
+  - minecraft:birch_boat +empty
+  - minecraft:jungle_boat +empty
+  - minecraft:acacia_boat +empty
+  - minecraft:dark_oak_boat +empty
+  - minecraft:mangrove_boat +empty
+  - minecraft:cherry_boat +empty
+  - minecraft:bamboo_raft +empty
+  - minecraft:minecart +empty
+  - minecraft:chest_minecart +empty
+  - minecraft:hopper_minecart +empty
+  - minecraft:tnt_minecart +empty
+  - minecraft:furnace_minecart +empty
+
+# Czarna lista dla default-clean.
+# Encje pasujące do tych reguł są pomijane nawet jeśli są na default-clean.
+# Przydatne do ochrony ważnych entityów
+#
+# PRZYKŁADY:
+#   - "minecraft:item" - chroni WSZYSTKIE items
+#   - "minecraft:minecart" - chroni wszystkie minecarty
+default-blacklist: []
+
+# Agresywne czyszczenie (critical TPS + /void fullclean)
+# Usuwa: items, pociski, pojazdy, mobs (z blacklist wyjątkami)
+high-clean:
+  - minecraft:item
+  # Pociski
+  - minecraft:arrow
+  - minecraft:spectral_arrow
+  - minecraft:trident
+  - minecraft:snowball
+  - minecraft:egg
+  - minecraft:ender_pearl
+  - minecraft:potion
+  - minecraft:experience_bottle
+  - minecraft:llama_spit
+  - minecraft:fireball
+  - minecraft:small_fireball
+  - minecraft:wither_skull
+  - minecraft:dragon_fireball
+  - minecraft:shulker_bullet
+  # Pojazdy
+  - minecraft:oak_boat
+  - minecraft:spruce_boat
+  - minecraft:birch_boat
+  - minecraft:jungle_boat
+  - minecraft:acacia_boat
+  - minecraft:dark_oak_boat
+  - minecraft:mangrove_boat
+  - minecraft:cherry_boat
+  - minecraft:bamboo_raft
+  - minecraft:minecart
+  - minecraft:chest_minecart
+  - minecraft:hopper_minecart
+  - minecraft:tnt_minecart
+  - minecraft:furnace_minecart
+  # Wrogie moby
+  - minecraft:zombie
+  - minecraft:skeleton
+  - minecraft:creeper
+  - minecraft:spider
+  - minecraft:cave_spider
+  - minecraft:enderman
+  - minecraft:slime
+  - minecraft:magma_cube
+  - minecraft:blaze
+  - minecraft:witch
+  - minecraft:phantom
+  - minecraft:drowned
+  - minecraft:husk
+  - minecraft:stray
+  - minecraft:pillager
+  - minecraft:vindicator
+  - minecraft:evoker
+  - minecraft:vex
+  - minecraft:ravager
+  - minecraft:zombie_villager
+  - minecraft:zombified_piglin
+  - minecraft:wither_skeleton
+  - minecraft:ghast
+  - minecraft:silverfish
+  - minecraft:endermite
+  - minecraft:guardian
+  - minecraft:shulker
+
+# Czarna lista dla /void fullclean.
+# Encje tutaj NIGDY nie zostaną usunięte przez fullCleanup
+#
+# Domyślnie: wioski i golemy (ważne dla farmek)
+fullclean-blacklist:
+  - minecraft:villager
+  - minecraft:iron_golem
+  - minecraft:wandering_trader
+
+# ============================================================
+#   Wiadomości (użyj & dla kodów kolorów)
+# ============================================================
+#
+# Dostępne kody kolorów:
+#   &0=czarny, &1=granatowy, &2=zielony, &3=cyjan, &4=czerwony
+#   &5=fioletowy, &6=pomarańczowy, &7=szary, &8=ciemny szary
+#   &9=błękit, &a=jasny zielony, &b=jasny cyjan, &c=jasny czerwony
+#   &d=jasny fioletowy, &e=żółty, &f=biały, &r=reset
+#
+# Dostępne zmienne: %seconds%, %tps%, %player%
+#
+
+messages:
+  cleanup-warning: '&cItems will be cleaned in &f%seconds%&c seconds!'
+  cleanup-complete: '&aAll ground items have been sent to the void!'
+  void-opening: '&eThe void is now open! Use &f/void&e to retrieve items!'
+  void-opening-soon: '&eVoid opens in &f%seconds%&e seconds!'
+  void-closing: '&cThe void will close in &f%seconds%&c seconds!'
+  void-closed: '&cThe void has closed! Remaining items were permanently deleted.'
+  no-permission: '&cYou don''t have permission to use this command!'
+  void-not-open: '&cThe void is not currently open!'
+  void-already-open: '&cThe void is already open!'
+  void-already-closed: '&cThe void is already closed!'
+  void-manual-cleanup: '&eManual cleanup triggered by &f%player%&e!'
+  void-manual-fullclean: '&e&lFull cleanup&e triggered by &f%player%&e!'
+  void-manual-open: '&eVoid opened manually by &f%player%&e!'
+  void-manual-close: '&eVoid closed manually by &f%player%&e!'
+  low-tps-cleanup: '&cLow TPS detected (&f%tps%&c)! Running emergency cleanup...'
+  critical-tps-cleanup: '&4&l⚠ CRITICAL! TPS: &f%tps%&4! FULLCLEAN!'

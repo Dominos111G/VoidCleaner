@@ -1,0 +1,39 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+*~
+
+# Gradle
+.gradle/
+build/
+out/
+.gradle
+.idea_modules/
+
+# Compiler
+*.class
+*.jar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Server/testing
+run/
+server/
+*.log
+
+# Misc
+.settings/
+.project
+.classpath
+*.bak
+gradle-app.setting
+
+# Java crash logs
+hs_err_pid*
