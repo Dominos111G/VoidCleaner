@@ -277,6 +277,24 @@ VoidCleaner is optimized for performance:
 - Void open/close: < 0.01 TPS drop
 - Player sync: No impact
 
+## 🔁 Version History
+### Future Roadmap
+- [ ] Admin GUI for void management
+- [ ] Particle effects on void open
+- [ ] Sound effects for notifications
+- [ ] Bossbar showing void status
+- [ ] Custom void names per group
+- [ ] Void statistics and analytics
+- [ ] Automatic world detection
+
+**0.1.0**
+- Initial release with core functionality.
+
+**0.1.1**
+- Added support for 1.21.x,
+- Cleaned code and fixed multi-language comments in code.
+
+
 ## 🔗 Links
 
 - **GitHub:** https://github.com/Dominos111G/VoidCleaner
