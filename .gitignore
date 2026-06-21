@@ -18,6 +18,8 @@ out/
 # Compiler
 *.class
 *.jar
+# Wyjatek: wrapper Gradle MUSI byc w repo (inaczej CI nie zbuduje projektu)
+!gradle/wrapper/gradle-wrapper.jar
 
 # OS
 .DS_Store
